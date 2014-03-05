@@ -9,4 +9,7 @@ echo "Installing depencies"
 sudo apt-get build-dep python-psycopg2
 echo "Installing pip"
 sudo apt-get install python-pip
-#pip install psycopg2
+echo "Installing psycopg2"
+sudo apt-get install python-psycopg2
+echo "Installing matrix_keypad depencies"
+sudo pip install matrix_keypad

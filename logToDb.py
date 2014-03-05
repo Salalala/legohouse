@@ -53,7 +53,3 @@ def logPhoto(cur, conn, idFromNextPicture):
     conn.close()
 
 
-
-+++ okay decompyling logToDb.pyc 
-# decompiled 1 files: 1 okay, 0 failed, 0 verify failed
-# 2014.03.05 14:35:29 CET
