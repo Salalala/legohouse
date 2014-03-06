@@ -19,7 +19,7 @@ GPIO.setmode(GPIO.BOARD)
 #Disble warnings.
 GPIO.setwarnings(False)
 #Code needed to activate the alarm.
-codeToActivate = 123
+codeToActivate = 1235
 
 
 #Setup all GPIO pins to either in or output.
@@ -30,19 +30,18 @@ def init():
 	global doorListener_pin
 	global motor_pin
 	global turnOfAlarm_pin
-	global house_led_pin
+
 	pressureListener_pin = 8
 	camera_led_pin = 5
 	doorListener_pin = 13
 	motor_pin = 10
 	turnOfAlarm_pin = 19
-	house_led_pin = 21
+
 	GPIO.setup(camera_led_pin, GPIO.OUT)
 	GPIO.setup(pressureListener_pin, GPIO.IN)
 	GPIO.setup(doorListener_pin, GPIO.IN)
 	GPIO.setup(motor_pin, GPIO.OUT)
 	GPIO.setup(turnOfAlarm_pin, GPIO.IN)
-	GPIO.setup(house_led_pin, GPIO.OUT)
 
 #Main function, will check all sensors and act accordingly.
 def securitySystem():
@@ -51,7 +50,6 @@ def securitySystem():
 		print("Alarm activated \n")
 		done = False
 		init()
-		GPIO.output(house_led_pin, True)
 		while done == False:		
 			if(GPIO.input(pressureListener_pin) == False):
 				pressurePlateSequence()
@@ -60,17 +58,18 @@ def securitySystem():
 			if(RCtime(18) > 400):
 				safeSequence()
 			if(GPIO.input(turnOfAlarm_pin) == False):
-				GPIO.output(houseled, False)
 				done = True                				
 
 #Ask user for numpad input, if the code entered equals the codeToActivate the function will return True.
 def activateAlarm():
 	kp = RPi_GPIO.keypad(columnCount = 3)
-	print "Please enter your 3 digit security code: \n"
+	print "Please enter your 4 digit security code: \n"
 	code = ""
 	digit = ""
-	
-	for i in xrange(0,3):
+	timeswrong = 1
+	wrongcounter = 0
+
+	for i in xrange(0,4):
 		digit = getDigit()
 		#print "You just entered" + digit
 		print digit
@@ -79,7 +78,11 @@ def activateAlarm():
 	if(str(code) == str(codeToActivate)):
 		return True
 	else:
-		return False
+		if(wrongcounter == timeswrong):
+			
+		print("You entered the wrong code, You have 1 chance to enter the correct code otherwise the alarm will go off \n")
+		activateAlarm()
+		
 
 #Sequence that will happen when the safe opens while the alarm is active. Log to the website, notify the user
 #and start the alarm.
