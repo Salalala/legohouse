@@ -19,7 +19,7 @@ GPIO.setmode(GPIO.BOARD)
 #Disble warnings.
 GPIO.setwarnings(False)
 #Code needed to activate the alarm.
-codeToActivate = 123
+codeToActivate = 222
 
 
 #Setup all GPIO pins to either in or output.
@@ -36,13 +36,11 @@ def init():
 	doorListener_pin = 13
 	motor_pin = 10
 	turnOfAlarm_pin = 19
-	house_led_pin = 21
 	GPIO.setup(camera_led_pin, GPIO.OUT)
 	GPIO.setup(pressureListener_pin, GPIO.IN)
 	GPIO.setup(doorListener_pin, GPIO.IN)
 	GPIO.setup(motor_pin, GPIO.OUT)
 	GPIO.setup(turnOfAlarm_pin, GPIO.IN)
-	GPIO.setup(house_led_pin, GPIO.OUT)
 
 #Main function, will check all sensors and act accordingly.
 def securitySystem():
@@ -51,7 +49,6 @@ def securitySystem():
 		print("Alarm activated \n")
 		done = False
 		init()
-		GPIO.output(house_led_pin, True)
 		while done == False:		
 			if(GPIO.input(pressureListener_pin) == False):
 				pressurePlateSequence()
@@ -60,19 +57,17 @@ def securitySystem():
 			if(RCtime(18) > 400):
 				safeSequence()
 			if(GPIO.input(turnOfAlarm_pin) == False):
-				GPIO.output(houseled, False)
 				done = True                				
-
+				print ("Alarm deactivated \n")
 #Ask user for numpad input, if the code entered equals the codeToActivate the function will return True.
 def activateAlarm():
 	kp = RPi_GPIO.keypad(columnCount = 3)
-	print "Please enter your 3 digit security code: \n"
+	print "Please enter your 3 digit security code:"
 	code = ""
 	digit = ""
 	
 	for i in xrange(0,3):
 		digit = getDigit()
-		#print "You just entered" + digit
 		print digit
 		time.sleep(0.2)
 		code += str(digit)
@@ -117,10 +112,10 @@ def takePicture():
 	id = getIdFromLastPicture(cur, con)
 	idFromNextPicture = int(id) + 1
 	imageName = "image" + str(idFromNextPicture) + ".jpg"
-	imagePath = "./img/" + imageName
+	imagePath = "./" + imageName
 	GPIO.output(camera_led_pin, True)
 	sleep(5)        
-	#os.system('raspistill -o "%s" -w 200 -h 150' % (imagePath) )
+	os.system('raspistill -o "%s" -w 200 -h 150' % (imagePath) )
 	GPIO.output(camera_led_pin, False)
 	remotehost = '193.191.187.55'
 	remotefile = '/var/www/img/'+ imageName
