@@ -54,7 +54,7 @@ def securitySystem():
 				pressurePlateSequence()
 			if(GPIO.input(doorListener_pin) == True):
 				doorSequence()		
-			if(RCtime(18) > 400):
+			if(RCtime(18) < 2000):
 				safeSequence()
 			if(GPIO.input(turnOfAlarm_pin) == False):
 				done = True                				
@@ -85,7 +85,7 @@ def safeSequence():
 	notify("Someone opened the safe", "2")
 	playAlarm()
 	GPIO.output(motor_pin, True)
-	sleep(2)
+	sleep(0.3)
 	GPIO.output(motor_pin, False)
 
 #Notify the user by sending a notification to his smartphone
